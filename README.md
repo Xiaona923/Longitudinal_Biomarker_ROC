@@ -26,7 +26,7 @@ Covariate- and Measurement Time-Specific Evaluation of ROC curve with Survival O
   - ROC.main()
   - plot_ROC()
 
-#--------------data-----------------#
+#--------------DATA-----------------#
 
 **simulation data under regular visits**
 - reg_data_sim_long.csv: long format data, each subject has multiple records
