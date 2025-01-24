@@ -29,7 +29,7 @@ and to construct a covariate- and measurement time-specific ROC curve.
     time.window = 1
     nResap = 50
 
-## estimate measurement time-varying coefficients
+## Estimate measurement time-varying coefficients
 
     model.results = analysis_main(long.data, short.data, cutoff.type.basis, sens.type.basis, covariate1, covariate2, tau, time.window, nResap)
 
