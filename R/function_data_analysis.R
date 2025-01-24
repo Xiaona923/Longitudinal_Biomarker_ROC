@@ -7,7 +7,7 @@
 #covariate1: covariates used for biomarker cutoff model
 #covariate2: covariates used for sensitivity model
 #tau: vector of tau that we are interested in
-#W: time-window
+#time-window
 #nResap: the number of perturbation
 
 plot_beta <- function(beta.t, beta.t.CI, visit.time, my.title = NULL){
@@ -84,7 +84,7 @@ plot_main <- function(coefficients, beta.Resap, covariates, visit.time, titles, 
 }
 
 
-analysis_main <- function(dat.long, dat.short, cutoff.type.basis, sens.type.basis, covariate1 = 1, covariate2 = 1, tau, W, nResap){
+analysis_main <- function(dat.long, dat.short, cutoff.type.basis, sens.type.basis, covariate1 = 1, covariate2 = 1, tau, time.window, nResap){
   model_results <- fit.2model.main(dat.long, dat.short, time.window, cutoff.type.basis, sens.type.basis, covariate1,
                                        covariate2, tau, nResap)
   vtime = sort(unique(dat.long$vtime))
