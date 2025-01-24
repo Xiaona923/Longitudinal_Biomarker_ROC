@@ -8,7 +8,14 @@
 
 ## Introduction
 
-## read in simulated long and short data
+We propose a flexible regression framework to evaluate the prognostic
+capability of longitudinal biomarker with survival outcome accounting
+for the covariate and biomaker measurement time. Here is an example
+using a simulated dataset to estimate the biomarker threshold at a
+specified specificity level along with the corresponding sensitivity,
+and to construct a covariate- and measurement time-specific ROC curve.
+
+## Read in simulated long and short data
 
     long.data <- read.csv("Data/reg_data_sim_long.csv")
     short.data <- read.csv("Data/reg_data_sim_short.csv")
