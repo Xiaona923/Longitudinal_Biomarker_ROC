@@ -31,10 +31,10 @@ and to construct a covariate- and measurement time-specific ROC curve.
     threshold, (FP: Fractional polynomial, linear: linear basis)
 -   sens.type.basis: type of basis function to estimate sensitivity
     level, (FP: Fractional polynomial, linear: linear basis)
--   covariate1: a vector of covariate names for fitting the model in
-    estimating the biomarker threshold
--   covariate2: a vector of covariate names for fitting the model in
-    estimating the sensitivity level
+-   covariate1: a vector of covariate names to estimate the biomarker
+    threshold
+-   covariate2: a vector of covariate names to estimate the sensitivity
+    level
 -   tau: target specificity level, could be a single value or a set of
     values between 0 and 1
 -   W: time window
