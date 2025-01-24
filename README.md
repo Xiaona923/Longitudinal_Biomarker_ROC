@@ -64,13 +64,10 @@ and to construct a covariate- and measurement time-specific ROC curve.
 
 ## Conditional ROC curve
 
-    ROC.data = data.frame(vtime = 0.5, Z = 1, Zcont = 0.25)
-    tau.set = seq(0.01, 1, 0.05)
-
-    ROC.results <- ROC.main(my.newdat = ROC.data,
+    ROC.results <- ROC.main(my.newdat = data.frame(vtime = 0.5, Z = 1, Zcont = 0.25),
                             dat.long = dat.long,
                             dat.short = dat.short, 
-                            tau = tau.set, 
+                            tau = seq(0.01, 1, 0.05), 
                             time.window = 1,
                             cutoff.type.basis = "FP",
                             sens.type.basis = "FP",
