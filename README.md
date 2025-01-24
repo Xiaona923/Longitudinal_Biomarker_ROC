@@ -6,7 +6,10 @@
     source("R/function_data_analysis.R") #get model results and plots
     source("R/Monotone_ROC.R") #get monotoned ROC curve & AUC
 
-    #read in simulated long and short data
+## Introduction
+
+## read in simulated long and short data
+
     long.data <- read.csv("Data/reg_data_sim_long.csv")
     short.data <- read.csv("Data/reg_data_sim_short.csv")
 
@@ -19,17 +22,18 @@
     time.window = 1
     nResap = 50
 
-    #estimate measurement time-varying coefficients
+## estimate measurement time-varying coefficients
+
     model.results = analysis_main(long.data, short.data, cutoff.type.basis, sens.type.basis, covariate1, covariate2, tau, time.window, nResap)
 
     #output
     model.results$cutoff_plots() 
 
-![](README_files/figure-markdown_strict/unnamed-chunk-2-1.png)![](README_files/figure-markdown_strict/unnamed-chunk-2-2.png)![](README_files/figure-markdown_strict/unnamed-chunk-2-3.png)
+![](README_files/figure-markdown_strict/unnamed-chunk-3-1.png)![](README_files/figure-markdown_strict/unnamed-chunk-3-2.png)![](README_files/figure-markdown_strict/unnamed-chunk-3-3.png)
 
     model.results$sens_plots()
 
-![](README_files/figure-markdown_strict/unnamed-chunk-2-4.png)![](README_files/figure-markdown_strict/unnamed-chunk-2-5.png)![](README_files/figure-markdown_strict/unnamed-chunk-2-6.png)
+![](README_files/figure-markdown_strict/unnamed-chunk-3-4.png)![](README_files/figure-markdown_strict/unnamed-chunk-3-5.png)![](README_files/figure-markdown_strict/unnamed-chunk-3-6.png)
 
     model.results$model_results$model.results$cutoff.model
 
@@ -65,7 +69,8 @@
     ## Null Deviance:       1752 
     ## Residual Deviance: 1731  AIC: 1663
 
-    #Conditional ROC curve 
+## Conditional ROC curve
+
     ROC.data = data.frame(vtime = 0.5, Z = 1, Zcont = mean(short.data$Zcont))
     tau.set = seq(0.01, 1, 0.05)
 
@@ -77,7 +82,7 @@
     #output ROC curve and AUC value
     plot_ROC(ROC.results$ROC.results$ROC, my.add = FALSE, my.col = "black", my.lty = 1)
 
-![](README_files/figure-markdown_strict/unnamed-chunk-3-1.png)
+![](README_files/figure-markdown_strict/unnamed-chunk-4-1.png)
 
     ROC.results$ROC.results$AUC
 

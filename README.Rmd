@@ -11,7 +11,12 @@ source("R/function_model_fit.R") #models
 source("R/function_data_analysis.R") #get model results and plots
 source("R/Monotone_ROC.R") #get monotoned ROC curve & AUC
 
-#read in simulated long and short data
+```
+
+## Introduction
+
+## read in simulated long and short data
+```{r message=FALSE, warning=FALSE}
 long.data <- read.csv("Data/reg_data_sim_long.csv")
 short.data <- read.csv("Data/reg_data_sim_short.csv")
 
@@ -26,9 +31,9 @@ nResap = 50
 
 ```
 
+## estimate measurement time-varying coefficients
 
 ```{r message=FALSE, warning=FALSE}
-#estimate measurement time-varying coefficients
 model.results = analysis_main(long.data, short.data, cutoff.type.basis, sens.type.basis, covariate1, covariate2, tau, time.window, nResap)
 
 #output
@@ -40,8 +45,9 @@ model.results$model_results$model.results$sensitivity.model
 
 ```
 
+## Conditional ROC curve 
+
 ```{r message=FALSE, warning=FALSE}
-#Conditional ROC curve 
 ROC.data = data.frame(vtime = 0.5, Z = 1, Zcont = mean(short.data$Zcont))
 tau.set = seq(0.01, 1, 0.05)
 
