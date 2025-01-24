@@ -15,12 +15,10 @@ process_dat <- function(my.weights, dat.long, dat.short, time.window){
   #merge two data set
   dat.full <- left_join(dat.long, dat.short, by = c("obs_id" = "obs_id")) #create formatted time for model fitting 
   
-  #return processed data
-  ## specificity
+  #specificity
   dat.spec <- dat.full %>% filter(W <= Y)
   
-  ## sensitivity
-  #filter data - sensitivity
+  #sensitivity
   dat.sens <- dat.full %>% filter(Y <= W) %>%
     mutate(mod.weight = wt_rsap * delta/(G_Y/G_s))
   return(list(cutoff.data = dat.spec, sensitivity.data = dat.sens))
@@ -112,8 +110,7 @@ pred.sens <- function(model, newdata, type.basis){
   return(predicted)
 }
 
-
-main <- function(model.weight, dat.long, dat.short, time.window, 
+fit.2model.tmp <- function(model.weight, dat.long, dat.short, time.window, 
                  cutoff.type.basis, sens.type.basis, 
                  covariate1, covariate2, tau, newdata = NULL){
   #function to fit threshold model and sensitivity model as well as output the predicted values
@@ -125,7 +122,7 @@ main <- function(model.weight, dat.long, dat.short, time.window,
   # sens.type.basis: type of basis function for sensitivity model, could be FP, linear, constant, intercept
   # covariate1: a vector of covariates name, baseline covariates adjusted in the cutoff (threshold) model
   # covariate2: a vector of covariates name, baseline covariates adjusted in the sensitivity model
-  # tau: numbers, a single value or set of tau values from (0, 1)
+  # tau: a single value or set of tau values from (0, 1)
   # newdata: data.frame for data prediction. default is NULL.
   
   processed.dat <- process_dat(model.weight, dat.long, dat.short, time.window)
@@ -150,7 +147,7 @@ main <- function(model.weight, dat.long, dat.short, time.window,
 }
 
 
-analysis_model_fit <- function(dat.long, dat.short, time.window, cutoff.type.basis, sens.type.basis, covariate1, covariate2, tau, nResap){
+fit.2model.main <- function(dat.long, dat.short, time.window, cutoff.type.basis, sens.type.basis, covariate1, covariate2, tau, nResap){
   #function to conduct a full data analysis with variance estimation (perturbation)
   #nResap: number of perturbation, the larger the number, the better precision of variance estimation
   n <-  nrow(dat.short)
@@ -162,11 +159,11 @@ analysis_model_fit <- function(dat.long, dat.short, time.window, cutoff.type.bas
   
   resap.weight.mat <- matrix(rexp(n*nResap, 1), nrow =n, ncol = nResap) #generate weight matrix for pertubation
   #fit models 
-  res <- main(1, dat.long, dat.short, time.window, cutoff.type.basis, sens.type.basis, covariate1,
+  res <- fit.2model.tmp(1, dat.long, dat.short, time.window, cutoff.type.basis, sens.type.basis, covariate1,
               covariate2, tau)
   
   #perturbation
-  resap.res <- apply(resap.weight.mat, 2, main, dat.long, dat.short, time.window, cutoff.type.basis, sens.type.basis, covariate1,
+  resap.res <- apply(resap.weight.mat, 2, fit.2model.tmp, dat.long, dat.short, time.window, cutoff.type.basis, sens.type.basis, covariate1,
                      covariate2, tau)
   
   return(list(model.results = res, resap.results = resap.res))

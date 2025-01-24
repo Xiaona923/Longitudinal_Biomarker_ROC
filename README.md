@@ -1,33 +1,106 @@
-# Longitudinal_Biomarker_ROC
-Covariate- and Measurement Time-Specific Evaluation of ROC curve with Survival Outcome for Longitudinal Biomarkers
+    library(MESS)
+    library(dplyr)
 
-#--------------CODE-----------------#
+    ## 
+    ## Attaching package: 'dplyr'
 
-**function_model_fit.R: contains functions to estimate biomarker threshold and corresponding sensitivity levels**
-  - process_dat(): process short and long data for modeling
-  - fit.spec(): estimate biomarker threshold conditioned on covariates and tau
-  - pred.spec(): get the fitted values at different biomarker measurement time
-  - fit.sens(): estimate corresponding sensitivity levels 
-  - pred.sens(): get the fitted values
-  - analysis_model_fit(): warp-up function for the model fitting
-    
-**function_data_analysis.R: contains functions to summarize the model results**
-  - plot_beta(): intermediate function to plot the time-varying beta and 95% CI
-  - calculate_beta_t(): intermediate function for plotting
-  - plot_main(): function to plot the results
-  - analysis_main(): KEY FUNCTION, warp-up all functions to fit the models and plot the results  
+    ## The following objects are masked from 'package:stats':
+    ## 
+    ##     filter, lag
 
-**monotone_ROC.R**
- function to monotone the ROC curve
- 
-**Get_ROC.R**
+    ## The following objects are masked from 'package:base':
+    ## 
+    ##     intersect, setdiff, setequal, union
 
-  - get_ROC()
-  - ROC.main()
-  - plot_ROC()
+    library(survival)
+    library(quantreg)
 
-#--------------DATA-----------------#
+    ## Loading required package: SparseM
 
-**simulation data under regular visits**
-- reg_data_sim_long.csv: long format data, each subject has multiple records
-- reg_data_sim_short.csv:  short format data, each subject has 1 records
+    ## 
+    ## Attaching package: 'quantreg'
+
+    ## The following object is masked from 'package:survival':
+    ## 
+    ##     untangle.specials
+
+    source("R/function_model_fit.R") #models
+    source("R/function_data_analysis.R") #get model results and plots
+    source("R/Monotone_ROC.R") #get monotoned ROC curve & AUC
+
+    #read in simulated long and short data
+    long.data <- read.csv("Data/reg_data_sim_long.csv")
+    short.data <- read.csv("Data/reg_data_sim_short.csv")
+
+    #set parameters
+    cutoff.type.basis = "FP"
+    sens.type.basis = "FP"
+    covariate1 = c("Z", "Zcont")
+    covariate2 = c("Z", "Zcont")
+    tau = 0.8
+    time.window = 1
+    nResap = 50
+
+    #estimate measurement time-varying coefficients
+    model.results = analysis_main(long.data, short.data, cutoff.type.basis, sens.type.basis, covariate1, covariate2, tau, time.window, nResap)
+
+    #output
+    model.results$cutoff_plots() 
+
+![](README_files/figure-markdown_strict/unnamed-chunk-2-1.png)![](README_files/figure-markdown_strict/unnamed-chunk-2-2.png)![](README_files/figure-markdown_strict/unnamed-chunk-2-3.png)
+
+    model.results$sens_plots()
+
+![](README_files/figure-markdown_strict/unnamed-chunk-2-4.png)![](README_files/figure-markdown_strict/unnamed-chunk-2-5.png)![](README_files/figure-markdown_strict/unnamed-chunk-2-6.png)
+
+    model.results$model_results$model.results$cutoff.model
+
+    ## Call:
+    ## rq(formula = form, tau = tau, data = data, weights = wt_rsap)
+    ## 
+    ## Coefficients:
+    ##     (Intercept)            logt           sqrtt       sqrtt_inv               Z 
+    ##      3.25781626      2.43893147     -4.10516946      1.49808804      0.17779243 
+    ##           Zcont          logt:Z      logt:Zcont         sqrtt:Z     sqrtt:Zcont 
+    ##     -0.20584834     -0.32217537     -0.17960692      0.08440667      0.30341534 
+    ##     sqrtt_inv:Z sqrtt_inv:Zcont 
+    ##     -0.33604048     -0.09086832 
+    ## 
+    ## Degrees of freedom: 1543 total; 1531 residual
+
+    model.results$model_results$model.results$sensitivity.model
+
+    ## [[1]]
+    ## 
+    ## Call:  glm(formula = form, family = binomial(link = "logit"), data = data, 
+    ##     weights = mod.weight)
+    ## 
+    ## Coefficients:
+    ##     (Intercept)             logt            sqrtt        sqrtt_inv  
+    ##          -1.336           -3.094            4.177           -1.973  
+    ##               Z            Zcont           logt:Z       logt:Zcont  
+    ##          11.076            9.550           21.841           11.416  
+    ##         sqrtt:Z      sqrtt:Zcont      sqrtt_inv:Z  sqrtt_inv:Zcont  
+    ##         -27.148          -16.262           16.284            6.840  
+    ## 
+    ## Degrees of Freedom: 1395 Total (i.e. Null);  1384 Residual
+    ## Null Deviance:       1752 
+    ## Residual Deviance: 1731  AIC: 1663
+
+    #Conditional ROC curve 
+    ROC.data = data.frame(vtime = 0.5, Z = 1, Zcont = mean(short.data$Zcont))
+    tau.set = seq(0.01, 1, 0.05)
+
+    ROC.results <- ROC.main(my.newdat = ROC.data, long.data, short.data, tau.set, time.window,
+                             cutoff.type.basis = "FP", sens.type.basis = "FP",
+                             covariate1 = c("Z", "Zcont"), covariate2 = c("Z", "Zcont"),
+                             nResap=50)
+
+    #output ROC curve and AUC value
+    plot_ROC(ROC.results$ROC.results$ROC, my.add = FALSE, my.col = "black", my.lty = 1)
+
+![](README_files/figure-markdown_strict/unnamed-chunk-3-1.png)
+
+    ROC.results$ROC.results$AUC
+
+    ## [1] 0.858847
