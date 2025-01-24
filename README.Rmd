@@ -34,7 +34,7 @@ nResap = 50
 
 ```
 
-## estimate measurement time-varying coefficients
+## Estimate measurement time-varying coefficients
 
 ```{r message=FALSE, warning=FALSE}
 model.results = analysis_main(long.data, short.data, cutoff.type.basis, sens.type.basis, covariate1, covariate2, tau, time.window, nResap)
