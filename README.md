@@ -1,29 +1,7 @@
     library(MESS)
     library(dplyr)
-
-    ## 
-    ## Attaching package: 'dplyr'
-
-    ## The following objects are masked from 'package:stats':
-    ## 
-    ##     filter, lag
-
-    ## The following objects are masked from 'package:base':
-    ## 
-    ##     intersect, setdiff, setequal, union
-
     library(survival)
     library(quantreg)
-
-    ## Loading required package: SparseM
-
-    ## 
-    ## Attaching package: 'quantreg'
-
-    ## The following object is masked from 'package:survival':
-    ## 
-    ##     untangle.specials
-
     source("R/function_model_fit.R") #models
     source("R/function_data_analysis.R") #get model results and plots
     source("R/Monotone_ROC.R") #get monotoned ROC curve & AUC
