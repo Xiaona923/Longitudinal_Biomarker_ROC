@@ -25,8 +25,8 @@ and to construct a covariate- and measurement time-specific ROC curve.
 -   dat.long: long format data, each subject may have multiple biomarker
     records
 -   dat.short: short format data, each subject only has one record,
-    including observed event time, event indicator, baseline covariates
-    (eg. Z, Zcont in this example)
+    including observed event time, event indicator, covariates (eg. Z,
+    Zcont in this example)
 -   cutoff.type.basis: type of basis function to estimate biomarker
     threshold, (FP: Fractional polynomial, linear: linear basis)
 -   sens.type.basis: type of basis function to estimate sensitivity
