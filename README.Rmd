@@ -34,7 +34,7 @@ dat.short <- read.csv("Data/reg_data_sim_short.csv")
  - covariate1: a vector of covariate names to estimate the biomarker threshold 
  - covariate2: a vector of covariate names to estimate the sensitivity level
  - tau: target specificity level, could be a single value or a set of values between 0 and 1 
- - W: time window
+ - time.window: a time window for biomarker evaluation
  - nResap: number of perturbation resampling
  
 ```{r message=FALSE, warning=FALSE}

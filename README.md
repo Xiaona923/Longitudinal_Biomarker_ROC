@@ -37,7 +37,7 @@ and to construct a covariate- and measurement time-specific ROC curve.
     level
 -   tau: target specificity level, could be a single value or a set of
     values between 0 and 1
--   W: time window
+-   time.window: a time window for biomarker evaluation
 -   nResap: number of perturbation resampling
 
 <!-- -->
