@@ -65,40 +65,6 @@ and to construct a covariate- and measurement time-specific ROC curve.
 
 ![](README_files/figure-markdown_strict/unnamed-chunk-3-2.png)
 
-    model.results$model_results$model.results$cutoff.model
-
-    ## Call:
-    ## rq(formula = form, tau = tau, data = data, weights = wt_rsap)
-    ## 
-    ## Coefficients:
-    ##     (Intercept)            logt           sqrtt       sqrtt_inv               Z 
-    ##      3.25781626      2.43893147     -4.10516946      1.49808804      0.17779243 
-    ##           Zcont          logt:Z      logt:Zcont         sqrtt:Z     sqrtt:Zcont 
-    ##     -0.20584834     -0.32217537     -0.17960692      0.08440667      0.30341534 
-    ##     sqrtt_inv:Z sqrtt_inv:Zcont 
-    ##     -0.33604048     -0.09086832 
-    ## 
-    ## Degrees of freedom: 1543 total; 1531 residual
-
-    model.results$model_results$model.results$sensitivity.model
-
-    ## [[1]]
-    ## 
-    ## Call:  glm(formula = form, family = binomial(link = "logit"), data = data, 
-    ##     weights = mod.weight)
-    ## 
-    ## Coefficients:
-    ##     (Intercept)             logt            sqrtt        sqrtt_inv  
-    ##          -1.336           -3.094            4.177           -1.973  
-    ##               Z            Zcont           logt:Z       logt:Zcont  
-    ##          11.076            9.550           21.841           11.416  
-    ##         sqrtt:Z      sqrtt:Zcont      sqrtt_inv:Z  sqrtt_inv:Zcont  
-    ##         -27.148          -16.262           16.284            6.840  
-    ## 
-    ## Degrees of Freedom: 1395 Total (i.e. Null);  1384 Residual
-    ## Null Deviance:       1752 
-    ## Residual Deviance: 1731  AIC: 1663
-
 ## Conditional ROC curve
 
     ROC.results <- ROC.main(my.newdat = data.frame(vtime = 0.5, Z = 1, Zcont = 0.25),

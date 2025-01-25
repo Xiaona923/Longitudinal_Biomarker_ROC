@@ -53,9 +53,6 @@ model.results = analysis_main(dat.long = dat.long,
 par(mfrow=c(1,3))
 model.results$cutoff_plots() 
 model.results$sens_plots()
-
-model.results$model_results$model.results$cutoff.model
-model.results$model_results$model.results$sensitivity.model
 ```
 
 ## Conditional ROC curve 
