@@ -46,6 +46,10 @@ fit.spec <- function(data, covariates, type.basis, tau){
     form <- as.formula(paste("Xt ~", part2))
   }else if(type.basis == "intercept"){
     form <- as.formula(paste("Xt ~", 1))
+  }else if(type.basis == "BS"){
+    knot <- quantile(unique(data$vtime), c(0.33, 0.66))
+    part1 = "(1 + bs(vtime, knots = knot)) *"
+    form <- as.formula(paste("Xt ~", part1 , part2))
   }
   mod <- rq(form, data = data, tau = tau, weights = wt_rsap)
   
@@ -88,6 +92,10 @@ fit.sens <- function(outcome_t, data, covariates, type.basis){
     form <- as.formula(paste("outcome_t ~", part2))
   }else if(type.basis == "intercept"){
     form <- as.formula(paste("outcome_t ~", 1))
+  }else if(type.basis == "BS"){
+    knot <- quantile(unique(data$vtime), c(0.33, 0.66))
+    part1 = "(1 + bs(vtime, knots = knot)) *"
+    form <- as.formula(paste("outcome_t ~", part1 , part2))
   }
   
   mod <- glm(form, data = data, weights = mod.weight, family = binomial(link = "logit"))

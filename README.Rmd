@@ -4,6 +4,7 @@ output: md_document
 
 ```{r message=FALSE, warning=FALSE}
 library(MESS)
+library(splines)
 library(dplyr)
 library(survival)
 library(quantreg)
@@ -29,8 +30,8 @@ dat.short <- read.csv("Data/reg_data_sim_short.csv")
 
  - dat.long: long format data, each subject may have multiple biomarker records
  - dat.short: short format data, each subject only has one record, including observed event time, event indicator, covariates (eg. Z, Zcont in this example)
- - cutoff.type.basis: type of basis function to estimate biomarker threshold, (FP: Fractional polynomial, linear: linear basis)
- - sens.type.basis: type of basis function to estimate sensitivity level, (FP: Fractional polynomial, linear: linear basis)
+ - cutoff.type.basis: type of basis function to estimate biomarker threshold, (FP: Fractional polynomial, BS: B Splines, linear: linear basis)
+ - sens.type.basis: type of basis function to estimate sensitivity level, (FP: Fractional polynomial, BS: B Splines, linear: linear basis)
  - covariate1: a vector of covariate names to estimate the biomarker threshold 
  - covariate2: a vector of covariate names to estimate the sensitivity level
  - tau: target specificity level, could be a single value or a set of values between 0 and 1 
@@ -53,6 +54,8 @@ par(mfrow=c(1,3))
 model.results$cutoff_plots() 
 model.results$sens_plots()
 
+model.results$model_results$model.results$cutoff.model
+model.results$model_results$model.results$sensitivity.model
 ```
 
 ## Conditional ROC curve 

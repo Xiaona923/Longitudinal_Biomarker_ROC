@@ -45,12 +45,20 @@ calculate_beta_t <- function(beta, beta.Resap, index, time.mat){
 }
 
 
-plot_main <- function(coefficients, beta.Resap, covariates, visit.time, titles, reverse = 0){
+plot_main <- function(coefficients, beta.Resap, basis, covariates, visit.time, titles, reverse = 0){
   coefficients <- as.data.frame(coefficients)
-  time.mat = data.frame(1, 
-                        logt = log(visit.time +0.1),
-                        sqrtt = sqrt(visit.time + 0.1),
-                        sqrtt_inv =sqrt(1/(visit.time + 0.1)))
+  if(basis == "FP"){
+    time.mat = data.frame(1, 
+                          logt = log(visit.time +0.1),
+                          sqrtt = sqrt(visit.time + 0.1),
+                          sqrtt_inv =sqrt(1/(visit.time + 0.1)))
+  }else if(basis == "BS"){
+    knot <- quantile(visit.time, c(0.33, 0.66))
+    bs.func <- bs(visit.time, knots = knot)
+    time.mat <- data.frame(1, bs.func)
+  }else if(basis == "linear"){
+    time.mat <- data.frame(1, vtime = visit.time)
+  }
   
   if(reverse == 1){
     beta_all <- -1 * rowMeans(coefficients)
@@ -69,8 +77,8 @@ plot_main <- function(coefficients, beta.Resap, covariates, visit.time, titles, 
   beta.Resap.check <- apply(beta.Resap1, 2, function(x){max(abs(x)) < 100}) #delete extreme values
   beta.Resap2 <- beta.Resap1[,beta.Resap.check]
   
-  
-  intercept_index <- which(coef.names %in% c("(Intercept)","logt","sqrtt","sqrtt_inv"))
+  intercept_pattern <- paste0(paste(covariates, "$", sep = ""), collapse = "|")
+  intercept_index <- which(!grepl(intercept_pattern, coef.names))
   intercept.res <- calculate_beta_t(beta = beta_all, beta.Resap = beta.Resap2, index = intercept_index, time.mat)
   plot_beta(beta.t = intercept.res$beta.t, beta.t.CI = intercept.res$beta.t.CI, visit.time, my.title = titles[1])
   
@@ -102,8 +110,7 @@ analysis_main <- function(dat.long, dat.short, cutoff.type.basis, sens.type.basi
                                                                        function(y){y$converged}))})
   
   sens_resap_clean <- mapply(function(x, y){Z = x[unlist(y)]}, sens_resap, sens_converge, SIMPLIFY = FALSE)
-  sens_resap_clean2 <- lapply(sens_resap_clean, 
-                              function(x){})
+
   
   
   
@@ -111,7 +118,7 @@ analysis_main <- function(dat.long, dat.short, cutoff.type.basis, sens.type.basi
   ncovari1 <- length(covariate1)
   cutoff_plot <- function(){
     tau_values <- unique(range(tau))
-    plot_main(coefficients = cutoff_coef, beta.Resap = cutoff_resap, 
+    plot_main(coefficients = cutoff_coef, beta.Resap = cutoff_resap,  basis = cutoff.type.basis,
               covariates = covariate1, visit.time = vtime, 
               titles = unlist(sapply(0:ncovari1, function(i) bquote(beta[.(paste(i)) ~ ","~ tau ~ "= ["~.(paste(tau_values, collapse = ", ")) ~ "]"] ~ "(s)"))),
               reverse = 0)}
@@ -120,7 +127,7 @@ analysis_main <- function(dat.long, dat.short, cutoff.type.basis, sens.type.basi
   ncovari2 <- length(covariate2)
   sens_plot <- function(){ 
     tau_values <- unique(range(tau))
-    plot_main(coefficients = sens_coef, beta.Resap = sens_resap_clean, 
+    plot_main(coefficients = sens_coef, beta.Resap = sens_resap_clean, basis = sens.type.basis,
              covariates = covariate2, visit.time = vtime, 
              titles = unlist(sapply(0:ncovari2, function(i) bquote(gamma[.(paste(i)) ~ ","~ tau ~ "= ["~.(paste(tau_values, collapse = ", ")) ~ "]"] ~ "(s)"))),
              reverse = 0)}
