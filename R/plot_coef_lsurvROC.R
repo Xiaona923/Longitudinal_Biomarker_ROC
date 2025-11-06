@@ -11,7 +11,7 @@
 #nResap: the number of perturbation
 
 plot_beta <- function(beta.t, beta.t.CI, visit.time, my.title = NULL){
-  #need to make sure the sequence of beta and time.mat need to be consistent
+  #the sequence of beta and time.mat need to be consistent
   x <- visit.time
   #prepare data to plot
   min.y <- floor(min(beta.t.CI[, 1])) 
@@ -45,7 +45,12 @@ calculate_beta_t <- function(beta, beta.Resap, index, time.mat){
 }
 
 
-plot_main <- function(coefficients, beta.Resap, basis, covariates, visit.time, titles, reverse = 0){
+plot_main <- function(coefficients, beta.Resap, basis, 
+                      covariates,
+                      visit.time,
+                      titles,
+                      reverse = 0, nknot = NULL, tol = 100){
+  
   coefficients <- as.data.frame(coefficients)
   if(basis == "FP"){
     time.mat = data.frame(1, 
@@ -53,7 +58,7 @@ plot_main <- function(coefficients, beta.Resap, basis, covariates, visit.time, t
                           sqrtt = sqrt(visit.time + 0.1),
                           sqrtt_inv =sqrt(1/(visit.time + 0.1)))
   }else if(basis == "BS"){
-    knot <- quantile(visit.time, c(0.33, 0.66))
+    knot <- quantile(visit.time,  ((1:nknot) /(nknot + 1)))
     bs.func <- bs(visit.time, knots = knot)
     time.mat <- data.frame(1, bs.func)
   }else if(basis == "linear"){
@@ -70,11 +75,11 @@ plot_main <- function(coefficients, beta.Resap, basis, covariates, visit.time, t
   check.ntau <- dim(coefficients)[2]
   coef.names = rownames(coefficients)
   if(check.ntau > 1){
-    beta.Resap1 <- do.call(cbind, lapply(beta.Resap, rowMeans))
+    beta.Resap1 <- do.call(cbind, lapply(beta.Resap, rowMeans, na.rm = T))
   }else{
     beta.Resap1 <- do.call(cbind, beta.Resap)
   }
-  beta.Resap.check <- apply(beta.Resap1, 2, function(x){max(abs(x)) < 100}) #delete extreme values
+  beta.Resap.check <- apply(beta.Resap1, 2, function(x){max(abs(x)) < tol}) #delete extreme values
   beta.Resap2 <- beta.Resap1[,beta.Resap.check]
   
   intercept_pattern <- paste0(paste(covariates, "$", sep = ""), collapse = "|")
@@ -92,49 +97,107 @@ plot_main <- function(coefficients, beta.Resap, basis, covariates, visit.time, t
 }
 
 
-analysis_main <- function(dat.long, dat.short, cutoff.type.basis, sens.type.basis, covariate1 = 1, covariate2 = 1, tau, time.window, nResap){
-  model_results <- fit.2model.main(dat.long, dat.short, time.window, cutoff.type.basis, sens.type.basis, covariate1,
-                                       covariate2, tau, nResap)
+
+
+plot_coef_lsurvROC <- function(dat.long, dat.short,
+                               cutoff.type.basis, sens.type.basis, 
+                               covariate1 = 1, covariate2 = 1, 
+                               tau, time.window, nResap, 
+                               show_plots = TRUE, nknot = NULL, model = NULL, tol = 1e3){
+  
+  
+  if(is.null(model)){
+    model_results <- lsurvROC(dat.long, 
+                              dat.short, 
+                              time.window,
+                              cutoff.type.basis,
+                              sens.type.basis, 
+                              covariate1, 
+                              covariate2, 
+                              tau, 
+                              nResap,
+                              nknot)
+  }else{
+    model_results <- model
+  }
+  
   vtime = sort(unique(dat.long$vtime))
   
   #extract coefficients
-  cutoff_coef = coefficients(model_results$model.results$cutoff.model)
-  sens_coef = as.data.frame(lapply(model_results$model.results$sensitivity.model, coefficients))
+  cutoff_coef = coefficients(model_results$model.results$cutoff.model$model)
+  sens_coef = as.data.frame(lapply(model_results$model.results$sensitivity.model,
+                                   function(x) coefficients(x$model)))
+  #check convergence and extreme values
+  sens_converge = sapply(model_results$model.results$sensitivity.model, 
+                         function(x){y = x$model; y$converged & !any(y$coefficients >= tol)})
+
+  if (any(!sens_converge)) {
+    warning(
+      paste0(sum(!sens_converge),
+             " sensitivity model(s) did not converge; delete tau = ",
+             paste0(tau[which(!sens_converge)],collapse = ", "))
+    )
+  }
   
   cutoff_resap = lapply(model_results$resap.results, 
-                        function(x){cutoff_resap = coefficients(x$cutoff.model)})
+                        function(x){
+                          cutoff_resap = coefficients(x$cutoff.model$model)
+                          })
   sens_resap = lapply(model_results$resap.results, 
-                      function(x){sens_resap = as.data.frame(lapply(x$sensitivity.model, coefficients))})
-  sens_converge <- lapply(model_results$resap.results, 
-                          function(x){sens_conv = as.data.frame(lapply(x$sensitivity.model,
-                                                                       function(y){y$converged}))})
+                      function(x){sens_resap = as.data.frame(
+                        lapply(x$sensitivity.model, function(x) coefficients(x$model))
+                                                             )})
+  sens_resap_converge <- lapply(model_results$resap.results, 
+                                function(x){sens_conv = as.data.frame(
+                                  lapply(x$sensitivity.model, function(y){y$converged})
+                                  )})
   
-  sens_resap_clean <- mapply(function(x, y){Z = x[unlist(y)]}, sens_resap, sens_converge, SIMPLIFY = FALSE)
+  #retain results only if the model has converged
+  
+  sens_resap_clean <- mapply(function(x, y){
+                            extreme_val <- apply(x, 2, function(q) any(abs(q) > tol)) 
+                            x[ , !y | extreme_val] <- NA
+                            Z = x[, sens_converge]
+                              }, 
+                       sens_resap, sens_resap_converge, SIMPLIFY = FALSE)
 
   
-  
-  
+ 
   #plot cutoff model time-dependent coef
   ncovari1 <- length(covariate1)
   cutoff_plot <- function(){
     tau_values <- unique(range(tau))
-    plot_main(coefficients = cutoff_coef, beta.Resap = cutoff_resap,  basis = cutoff.type.basis,
-              covariates = covariate1, visit.time = vtime, 
+    plot_main(coefficients = cutoff_coef, 
+              beta.Resap = cutoff_resap, 
+              basis = cutoff.type.basis,
+              covariates = covariate1,
+              visit.time = vtime, 
               titles = unlist(sapply(0:ncovari1, function(i) bquote(beta[.(paste(i)) ~ ","~ tau ~ "= ["~.(paste(tau_values, collapse = ", ")) ~ "]"] ~ "(s)"))),
-              reverse = 0)}
+              reverse = 0, 
+              nknot, 
+              tol)}
   
   #plot sens model time-dependent coef
   ncovari2 <- length(covariate2)
   sens_plot <- function(){ 
-    tau_values <- unique(range(tau))
-    plot_main(coefficients = sens_coef, beta.Resap = sens_resap_clean, basis = sens.type.basis,
-             covariates = covariate2, visit.time = vtime, 
-             titles = unlist(sapply(0:ncovari2, function(i) bquote(gamma[.(paste(i)) ~ ","~ tau ~ "= ["~.(paste(tau_values, collapse = ", ")) ~ "]"] ~ "(s)"))),
-             reverse = 0)}
-  return(list(model_results = model_results,
-              cutoff_plots = cutoff_plot,
-              sens_plots = sens_plot))
+    tau_values <- unique(range(tau[sens_converge]))
+    plot_main(coefficients = sens_coef[sens_converge], 
+              beta.Resap = sens_resap_clean, 
+              basis = sens.type.basis,
+              covariates = covariate2,
+              visit.time = vtime, 
+              titles = unlist(sapply(0:ncovari2, function(i) bquote(gamma[.(paste(i)) ~ ","~ tau ~ "= ["~.(paste(tau_values, collapse = ", ")) ~ "]"] ~ "(s)"))),
+              reverse = 0, 
+              nknot, tol)}
+  
+  if(isTRUE(show_plots)){
+    print(cutoff_plot()) 
+    print(sens_plot())
+    
+  }
+  
+  invisible((list(cutoff_plots = cutoff_plot,
+                  sens_plots = sens_plot)))
 }
-
 
 
