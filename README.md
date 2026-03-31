@@ -1,18 +1,8 @@
-    remotes::install_github("Xiaona923/pkg_test", force = TRUE)
-
-    ## cpp11    (0.5.1  -> 0.5.2 ) [CRAN]
-    ## utf8     (1.2.5  -> 1.2.6 ) [CRAN]
-    ## pillar   (1.10.2 -> 1.11.1) [CRAN]
-    ## magrittr (2.0.3  -> 2.0.4 ) [CRAN]
-    ## isoband  (0.2.7  -> 0.3.0 ) [CRAN]
-    ## tibble   (3.2.1  -> 3.3.0 ) [CRAN]
-    ## ggplot2  (3.5.2  -> 4.0.1 ) [CRAN]
+    remotes::install_github("Xiaona923/Longitudinal_Biomarker_ROC", force = TRUE)
 
     ## 
-    ## The downloaded binary packages are in
-    ##  /var/folders/xf/l79029316mxg61sybqflzb_40000gn/T//Rtmp1pjvLj/downloaded_packages
     ## ── R CMD build ─────────────────────────────────────────────────────────────────
-    ##      checking for file ‘/private/var/folders/xf/l79029316mxg61sybqflzb_40000gn/T/Rtmp1pjvLj/remotes935817f537ce/Xiaona923-pkg_test-0020d28/DESCRIPTION’ ...  ✔  checking for file ‘/private/var/folders/xf/l79029316mxg61sybqflzb_40000gn/T/Rtmp1pjvLj/remotes935817f537ce/Xiaona923-pkg_test-0020d28/DESCRIPTION’
+    ##      checking for file ‘/private/var/folders/xf/l79029316mxg61sybqflzb_40000gn/T/RtmpTb4ZsZ/remotes96d66e377a38/Xiaona923-Longitudinal_Biomarker_ROC-735d48c/DESCRIPTION’ ...  ✔  checking for file ‘/private/var/folders/xf/l79029316mxg61sybqflzb_40000gn/T/RtmpTb4ZsZ/remotes96d66e377a38/Xiaona923-Longitudinal_Biomarker_ROC-735d48c/DESCRIPTION’
     ##   ─  preparing ‘lsurvROC’:
     ##      checking DESCRIPTION meta-information ...  ✔  checking DESCRIPTION meta-information
     ##   ─  checking for LF line-endings in source and make files and shell scripts
