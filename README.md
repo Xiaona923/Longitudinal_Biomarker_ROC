@@ -1,11 +1,27 @@
-    library(MESS)
-    library(splines)
-    library(dplyr)
-    library(survival)
-    library(quantreg)
-    source("R/function_model_fit.R") #models
-    source("R/function_data_analysis.R") #get model results and plots
-    source("R/Monotone_ROC.R") #get monotoned ROC curve & AUC
+    remotes::install_github("Xiaona923/pkg_test", force = TRUE)
+
+    ## cpp11    (0.5.1  -> 0.5.2 ) [CRAN]
+    ## utf8     (1.2.5  -> 1.2.6 ) [CRAN]
+    ## pillar   (1.10.2 -> 1.11.1) [CRAN]
+    ## magrittr (2.0.3  -> 2.0.4 ) [CRAN]
+    ## isoband  (0.2.7  -> 0.3.0 ) [CRAN]
+    ## tibble   (3.2.1  -> 3.3.0 ) [CRAN]
+    ## ggplot2  (3.5.2  -> 4.0.1 ) [CRAN]
+
+    ## 
+    ## The downloaded binary packages are in
+    ##  /var/folders/xf/l79029316mxg61sybqflzb_40000gn/T//Rtmp1pjvLj/downloaded_packages
+    ## ── R CMD build ─────────────────────────────────────────────────────────────────
+    ##      checking for file ‘/private/var/folders/xf/l79029316mxg61sybqflzb_40000gn/T/Rtmp1pjvLj/remotes935817f537ce/Xiaona923-pkg_test-0020d28/DESCRIPTION’ ...  ✔  checking for file ‘/private/var/folders/xf/l79029316mxg61sybqflzb_40000gn/T/Rtmp1pjvLj/remotes935817f537ce/Xiaona923-pkg_test-0020d28/DESCRIPTION’
+    ##   ─  preparing ‘lsurvROC’:
+    ##      checking DESCRIPTION meta-information ...  ✔  checking DESCRIPTION meta-information
+    ##   ─  checking for LF line-endings in source and make files and shell scripts
+    ##   ─  checking for empty or unneeded directories
+    ##   ─  building ‘lsurvROC_0.0.1.tar.gz’
+    ##      
+    ## 
+
+    library(lsurvROC)
 
 ## Introduction
 
@@ -16,10 +32,9 @@ using a simulated dataset to estimate the biomarker threshold at a
 specified specificity level along with the corresponding sensitivity,
 and to construct a covariate- and measurement time-specific ROC curve.
 
-## Read in long and short data
+## Read in example data
 
-    dat.long <- read.csv("Data/reg_data_sim_long.csv")
-    dat.short <- read.csv("Data/reg_data_sim_short.csv")
+    data("example_data")
 
 ## Estimate time-varying coefficients
 
@@ -45,44 +60,37 @@ and to construct a covariate- and measurement time-specific ROC curve.
 
 <!-- -->
 
-    model.results = analysis_main(dat.long = dat.long, 
-                                  dat.short = dat.short, 
-                                  cutoff.type.basis = "FP", 
-                                  sens.type.basis = "FP", 
-                                  covariate1 = c("Z", "Zcont"), 
-                                  covariate2 = c("Z", "Zcont"), 
-                                  tau = 0.8, 
-                                  time.window = 1,
-                                  nResap = 50)
+    res = lsurvROC(dat.long = example_data$data.long, 
+                  dat.short = example_data$data.short,
+                  cutoff.type.basis = "FP",
+                  sens.type.basis = "FP", 
+                  covariate1 = c("Z", "Zcont"), 
+                  covariate2 = c("Z", "Zcont"), 
+                  tau = c(0.7, 0.8, 0.9), 
+                  time.window = 1, 
+                  nResap = 50,
+                  newdata = NULL
+                  )
 
-    #output
     par(mfrow=c(1,3))
-    model.results$cutoff_plots() 
+    plot(res)
 
-![](README_files/figure-markdown_strict/unnamed-chunk-3-1.png)
-
-    model.results$sens_plots()
-
-![](README_files/figure-markdown_strict/unnamed-chunk-3-2.png)
+![](README_files/figure-markdown_strict/unnamed-chunk-3-1.png)![](README_files/figure-markdown_strict/unnamed-chunk-3-2.png)
 
 ## Conditional ROC curve
 
-    ROC.results <- ROC.main(my.newdat = data.frame(vtime = 0.5, Z = 1, Zcont = 0.25),
-                            dat.long = dat.long,
-                            dat.short = dat.short, 
-                            tau = seq(0.01, 1, 0.05), 
-                            time.window = 1,
-                            cutoff.type.basis = "FP",
-                            sens.type.basis = "FP",
-                            covariate1 = c("Z", "Zcont"), 
-                            covariate2 = c("Z", "Zcont"),
-                            nResap=50)
+    res = lsurvROC(dat.long = example_data$data.long, 
+                  dat.short = example_data$data.short,
+                  cutoff.type.basis = "FP",
+                  sens.type.basis = "FP", 
+                  covariate1 = c("Z", "Zcont"), 
+                  covariate2 = c("Z", "Zcont"), 
+                  tau = seq(0.1, 0.9, 0.05), 
+                  time.window = 1, 
+                  nResap = 50,
+                  newdata = data.frame(vtime = 0.5, Z = 1, Zcont = 0.25)
+                  )
 
-    #output ROC curve and AUC value
-    plot_ROC(ROC.results$ROC.results$ROC, my.add = FALSE, my.col = "black", my.lty = 1)
+    plot(res, ROC = TRUE)
 
-![](README_files/figure-markdown_strict/unnamed-chunk-4-1.png)
-
-    ROC.results$ROC.results$AUC
-
-    ## [1] 0.8568154
+![](README_files/figure-markdown_strict/unnamed-chunk-4-1.png)![](README_files/figure-markdown_strict/unnamed-chunk-4-2.png)![](README_files/figure-markdown_strict/unnamed-chunk-4-3.png)![](README_files/figure-markdown_strict/unnamed-chunk-4-4.png)![](README_files/figure-markdown_strict/unnamed-chunk-4-5.png)![](README_files/figure-markdown_strict/unnamed-chunk-4-6.png)![](README_files/figure-markdown_strict/unnamed-chunk-4-7.png)

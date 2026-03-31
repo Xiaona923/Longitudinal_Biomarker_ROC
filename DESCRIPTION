@@ -1,0 +1,13 @@
+Package: lsurvROC
+Type: Package
+Title: Covariate- and Measurement Time-Specific ROC Analysis for Longitudinal Biomarkers with Survival Outcome
+Version: 0.0.1
+Author: Xiaona Li, Jing Ning, Wen Li, Dejian Lai, Tru Cao, Ruosha Li
+Maintainer: Xiaona Li <xiaona0049@gmail.com>
+Description: Estimate the biomarker threshold at a specified specificity level along with the corresponding sensitivity using flexible regression models, and construct a covariate- and measurement time-specific ROC curve.
+License: GPL-2
+Encoding: UTF-8
+Depends: R (>= 4.0), quantreg, dplyr, ggplot2, survival
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.3.2
+LazyData: true
