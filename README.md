@@ -1,3 +1,7 @@
+    library(remotes)
+    remotes::install_github("Xiaona923/Longitudinal_Biomarker_ROC", force = TRUE)
+    library(lsurvROC)
+
 ## Introduction
 
 We propose a flexible regression framework to evaluate the prognostic
