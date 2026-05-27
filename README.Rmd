@@ -2,7 +2,7 @@
 output: md_document
 ---
 
-```{r message=FALSE, warning=FALSE}
+```{r message=FALSE, warning=FALSE, include=FALSE}
 library(remotes)
 remotes::install_github("Xiaona923/Longitudinal_Biomarker_ROC", force = TRUE)
 library(lsurvROC)

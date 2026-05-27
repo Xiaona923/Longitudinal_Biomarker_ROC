@@ -1,18 +1,3 @@
-    remotes::install_github("Xiaona923/Longitudinal_Biomarker_ROC", force = TRUE)
-
-    ## 
-    ## ── R CMD build ─────────────────────────────────────────────────────────────────
-    ##      checking for file ‘/private/var/folders/xf/l79029316mxg61sybqflzb_40000gn/T/RtmpTb4ZsZ/remotes96d66e377a38/Xiaona923-Longitudinal_Biomarker_ROC-735d48c/DESCRIPTION’ ...  ✔  checking for file ‘/private/var/folders/xf/l79029316mxg61sybqflzb_40000gn/T/RtmpTb4ZsZ/remotes96d66e377a38/Xiaona923-Longitudinal_Biomarker_ROC-735d48c/DESCRIPTION’
-    ##   ─  preparing ‘lsurvROC’:
-    ##      checking DESCRIPTION meta-information ...  ✔  checking DESCRIPTION meta-information
-    ##   ─  checking for LF line-endings in source and make files and shell scripts
-    ##   ─  checking for empty or unneeded directories
-    ##   ─  building ‘lsurvROC_0.0.1.tar.gz’
-    ##      
-    ## 
-
-    library(lsurvROC)
-
 ## Introduction
 
 We propose a flexible regression framework to evaluate the prognostic
