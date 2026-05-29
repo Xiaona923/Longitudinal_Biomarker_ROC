@@ -11,3 +11,7 @@ Depends: R (>= 4.0), quantreg, dplyr, ggplot2, survival
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.2
 LazyData: true
+Suggests: 
+    knitr,
+    rmarkdown
+VignetteBuilder: knitr
