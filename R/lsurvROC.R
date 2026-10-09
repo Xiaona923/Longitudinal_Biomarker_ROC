@@ -15,6 +15,7 @@
 #' @param nResap a numeric value to perform perturbation resampling. The default value = 200. Larger value can generate more accurate ASE value
 #' @param show_plots if TRUE then the time-varying coefficients plot will be displayed
 #' @param nknot if basis function is B splines, need to specify the number of knot
+#' @param monotone.method user specified method for monotonization.
 #' @param tol a constant used for removing unconverged results
 #' @examples
 #'   data(example_data)
@@ -44,6 +45,7 @@ lsurvROC <- function(dat.long, dat.short,
                                tau, time.window, nResap = 200, 
                                newdata = NULL,
                                nknot = NULL,
+                               monotone.method = "both",
                                tol = 1e3
                      ){
  #fit models
@@ -64,7 +66,7 @@ lsurvROC <- function(dat.long, dat.short,
   if(!is.null(newdata)){
     #get the main ROC curve
     my.ROC <- get_ROC(model = model_results$model.results,
-                      method = "both",
+                      method = monotone.method,
                       cutoff.type.basis = cutoff.type.basis,
                       sens.type.basis = sens.type.basis,
                       my.newdat = newdata,
@@ -75,7 +77,7 @@ lsurvROC <- function(dat.long, dat.short,
     #get perturbed ROC curves
     ROC.resap <- lapply(model_results$resap.results, 
                         function(x){get_ROC(x,
-                                            method = "both",
+                                            method = monotone.method,
                                             cutoff.type.basis = cutoff.type.basis,
                                             sens.type.basis = sens.type.basis,
                                             my.newdat = newdata, 
@@ -94,7 +96,8 @@ lsurvROC <- function(dat.long, dat.short,
                                 covariate1 = covariate1, 
                                 covariate2 = covariate2,
                                 nknot = nknot, 
-                                tol = tol))
+                                tol = tol,
+                                monotone.method = monotone.method))
     
   }else{
     output <- list(model = model_results,
