@@ -63,8 +63,10 @@ lsurvROC <- function(dat.long, dat.short,
  #get ROC curve if newdata == TRUE
   if(!is.null(newdata)){
     #get the main ROC curve
-    my.ROC <- get_ROC(model = model_results$model.results$sensitivity.model,
-                      basis = sens.type.basis, 
+    my.ROC <- get_ROC(model = model_results$model.results,
+                      method = "both",
+                      cutoff.type.basis = cutoff.type.basis,
+                      sens.type.basis = sens.type.basis,
                       my.newdat = newdata,
                       tau = tau, 
                       tol = tol)
@@ -72,8 +74,10 @@ lsurvROC <- function(dat.long, dat.short,
     
     #get perturbed ROC curves
     ROC.resap <- lapply(model_results$resap.results, 
-                        function(x){get_ROC(x$sensitivity.model,
-                                            basis = sens.type.basis, 
+                        function(x){get_ROC(x,
+                                            method = "both",
+                                            cutoff.type.basis = cutoff.type.basis,
+                                            sens.type.basis = sens.type.basis,
                                             my.newdat = newdata, 
                                             tau = tau)})
     
@@ -82,6 +86,7 @@ lsurvROC <- function(dat.long, dat.short,
     output <- list(model = model_results,
                    ROC = my.ROC$ROC,
                    AUC = list(AUC = my.ROC$AUC, sd = AUC.sd),
+                   threshold = my.ROC$threshold
                    param = list(times = vtime,
                                 taus = tau,
                                 cutoff.type.basis = cutoff.type.basis,
