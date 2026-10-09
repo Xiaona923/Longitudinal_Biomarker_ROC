@@ -16,6 +16,7 @@ lsurvROC(
   nResap = 200,
   newdata = NULL,
   nknot = NULL,
+  monotone.method = "both",
   tol = 1000
 )
 }
@@ -39,6 +40,8 @@ lsurvROC(
 \item{nResap}{a numeric value to perform perturbation resampling. The default value = 200. Larger value can generate more accurate ASE value}
 
 \item{nknot}{if basis function is B splines, need to specify the number of knot}
+
+\item{monotone.method}{user specified method for monotonization.}
 
 \item{tol}{a constant used for removing unconverged results}
 

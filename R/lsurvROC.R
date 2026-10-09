@@ -88,7 +88,7 @@ lsurvROC <- function(dat.long, dat.short,
     output <- list(model = model_results,
                    ROC = my.ROC$ROC,
                    AUC = list(AUC = my.ROC$AUC, sd = AUC.sd),
-                   threshold = my.ROC$threshold
+                   threshold = my.ROC$threshold,
                    param = list(times = vtime,
                                 taus = tau,
                                 cutoff.type.basis = cutoff.type.basis,
