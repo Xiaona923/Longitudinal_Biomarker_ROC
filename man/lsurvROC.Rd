@@ -65,7 +65,6 @@ and plots the time-varying coefficients with 95\% confidence interval.
     covariate2 = c("Z", "Zcont"), 
     tau = c(0.7, 0.8, 0.9), 
     time.window = 1, 
-    nResap = 50, 
-    show_plots = TRUE
+    nResap = 50
     )
 }
