@@ -33,8 +33,11 @@ get_ROC <- function(model, method = "both", cutoff.type.basis = NULL, sens.type.
     colnames(mono.threshold) <- c("tau", "threshold")
     roc.out <- origin.res %>% 
       filter(as.character(tau) %in% as.character(mono.threshold$tau)) %>%
-      dplyr::select(FalsePos, pred.sens) %>% rename(TruePos = pred.sens)
-    
+      dplyr::select(FalsePos, pred.sens) %>% rename(TruePos = pred.sens) %>%
+      dplyr::add_row(FalsePos = 0, TruePos = 0) %>%
+      dplyr::add_row(FalsePos = 1, TruePos = 1) %>%
+      arrange(FalsePos)
+      
     auc.val <- get_AUC(roc.out$FalsePos, roc.out$TruePos)
     rownames(roc.out) = 1:nrow(roc.out)
     rownames(mono.threshold) = 1:nrow(mono.threshold)
