@@ -81,12 +81,12 @@ lsurvROC <- function(dat.long, dat.short,
                                             sens.type.basis = sens.type.basis,
                                             my.newdat = newdata, 
                                             tau = tau)})
-    
-    AUC.sd = sd(unlist(lapply(ROC.resap, "[", "AUC")))
+    AUC.resap = unlist(lapply(ROC.resap, "[", "AUC"))
+    AUC.sd = sd(AUC.resap)
     
     output <- list(model = model_results,
-                   ROC = my.ROC$ROC,
-                   AUC = list(AUC = my.ROC$AUC, sd = AUC.sd),
+                   ROC = list(ROC = my.ROC$ROC, ROC.resap = ROC.resap),
+                   AUC = list(AUC = my.ROC$AUC, sd = AUC.sd, AUC.resap = AUC.resap),
                    threshold = my.ROC$threshold,
                    param = list(times = vtime,
                                 taus = tau,
