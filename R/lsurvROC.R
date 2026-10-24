@@ -15,7 +15,7 @@
 #' @param nResap a numeric value to perform perturbation resampling. The default value = 200. Larger value can generate more accurate ASE value
 #' @param show_plots if TRUE then the time-varying coefficients plot will be displayed
 #' @param nknot if basis function is B splines, need to specify the number of knot
-#' @param monotone.method user specified method for monotonization.
+#' @param monotone.method user specified method for monotonization. `both`: monotone both sensitivity and threshold, `sensitivity`: monotone sensitivity only, `threshold`: monotone threshold only. Default method is `both`.
 #' @param tol a constant used for removing unconverged results
 #' @examples
 #'   data(example_data)
