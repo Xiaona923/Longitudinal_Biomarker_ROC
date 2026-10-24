@@ -16,7 +16,7 @@ plot.lsurvROC <- function(x, ROC = FALSE, ...) {
   nknot <- x$param$nknot
   
   if(ROC == TRUE){
-    data <- x$ROC
+    data <- x$ROC$ROC
     f <- approxfun(data$FalsePos, data$TruePos, method = "constant", f = 0)
     par(pty="s")
     curve(f(x), from = 0, to = 1, ylim = c(0, 1), lwd = 1.5, 
