@@ -45,6 +45,7 @@ data("example_data")
  - **covariate2**: a vector of covariate names to estimate the sensitivity level
  - **tau**: target specificity level, could be a single value or a set of values between 0 and 1 
  - **time.window**: a time window for biomarker evaluation
+ - **monotone.method**:  user specified method for monotonization
  - **nResap**: number of perturbation resampling
  
 ```{r message=FALSE, warning=FALSE}
@@ -56,6 +57,7 @@ res = lsurvROC(dat.long = example_data$data.long,
               covariate2 = c("Z", "Zcont"), 
               tau = c(0.7, 0.8, 0.9), 
               time.window = 1, 
+              monotone.method = "both",
               nResap = 50,
               newdata = NULL
               )
@@ -76,6 +78,7 @@ res = lsurvROC(dat.long = example_data$data.long,
               covariate2 = c("Z", "Zcont"), 
               tau = seq(0.1, 0.9, 0.05), 
               time.window = 1, 
+              monotone.method = "both",
               nResap = 50,
               newdata = data.frame(vtime = 0.5, Z = 1, Zcont = 0.25)
               )

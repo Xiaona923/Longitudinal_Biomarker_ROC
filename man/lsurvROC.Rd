@@ -16,6 +16,7 @@ lsurvROC(
   nResap = 200,
   newdata = NULL,
   nknot = NULL,
+  monotone.method = "both",
   tol = 1000
 )
 }
@@ -40,6 +41,8 @@ lsurvROC(
 
 \item{nknot}{if basis function is B splines, need to specify the number of knot}
 
+\item{monotone.method}{user specified method for monotonization.}
+
 \item{tol}{a constant used for removing unconverged results}
 
 \item{show_plots}{if TRUE then the time-varying coefficients plot will be displayed}
@@ -62,7 +65,6 @@ and plots the time-varying coefficients with 95\% confidence interval.
     covariate2 = c("Z", "Zcont"), 
     tau = c(0.7, 0.8, 0.9), 
     time.window = 1, 
-    nResap = 50, 
-    show_plots = TRUE
+    nResap = 50
     )
 }

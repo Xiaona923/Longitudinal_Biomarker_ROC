@@ -17,7 +17,7 @@ plot.lsurvROC <- function(x, ROC = FALSE, ...) {
   
   if(ROC == TRUE){
     data <- x$ROC
-    f <- approxfun(data$FalsePos, data$new_meas, method = "constant", f = 0)
+    f <- approxfun(data$FalsePos, data$TruePos, method = "constant", f = 0)
     par(pty="s")
     curve(f(x), from = 0, to = 1, ylim = c(0, 1), lwd = 1.5, 
           xlab = "",
